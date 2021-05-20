@@ -33,7 +33,7 @@ public class DeletTest02 {
 			pstmt.setString(1, name);
 			// 4. SQL문을 실행
 			int count = pstmt.executeUpdate();
-			result = count ==1;
+			result = count == 1;
 		
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버 로딩 실패 : " + e);
