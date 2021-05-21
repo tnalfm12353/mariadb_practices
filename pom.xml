@@ -42,5 +42,6 @@
   
   <modules>
   	<module>jdbc-practice</module>
+  	<module>bookmall</module>
   </modules>
 </project>
