@@ -53,14 +53,16 @@ public class BookMall {
 		List<OrderVo> orderList = new OrderDao().findAll();
 		displayInfo(orderList);
 		
-//		line("주문 서적");
-//		insertOrderBook(3, bookList.get(0), orderList.get(0));
-//		insertOrderBook(1, bookList.get(1), orderList.get(0));
-//		
-//		List<OrderBookVo> orderBookList = new OrderBookDao().findAll();
-//		displayInfo(orderBookList);
+		line("주문 서적");
+		insertOrderBook(3, bookList.get(0), orderList.get(0));
+		insertOrderBook(1, bookList.get(1), orderList.get(0));
 		
+		List<OrderBookVo> orderBookList = new OrderBookDao().findAll();
+		displayInfo(orderBookList);
 		
+		line("최종 주문");
+		updateOrder(orderList.get(0), orderBookList);
+		displayInfo(orderList);
 	}
 	/**
 	 * 	insert
@@ -105,6 +107,7 @@ public class BookMall {
 		OrderBookVo vo = new OrderBookVo();
 		vo.setBookId(bookVo.getId());
 		vo.setPrice(bookVo.getPrice() - 2000); // 2000원 할인된 가격으로 구매
+		vo.setOrderNum(orderVo.getOrderNum());
 		vo.setCount(count);
 		vo.setOrderId(orderVo.getId());
 		Boolean result = new OrderBookDao().insert(vo);
@@ -127,9 +130,12 @@ public class BookMall {
 	private static void updateOrder(OrderVo vo, List<OrderBookVo> orderBookList) {
 		int totalPrice = 0;
 		for(OrderBookVo OBVo: orderBookList) {
-			totalPrice += OBVo.getPrice() * OBVo.getCount();
+			if(OBVo.getOrderNum() == vo.getOrderNum())
+				totalPrice += OBVo.getPrice() * OBVo.getCount();
 		}
+
 		vo.setTotalPrice(totalPrice);
+		new OrderDao().updateOrder(vo);
 	}
 	
 	

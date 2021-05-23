@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.douzone.bookmall.vo.CategoryVo;
 import com.douzone.bookmall.vo.OrderVo;
 
 public class OrderDao {
@@ -66,7 +65,8 @@ public class OrderDao {
 			conn = getConnection();
 			
 			String sql = "select o.id, o.order_num, m.name, m.email, o.total_price, o.address "
-					+ "		from order o, member m";
+					+ "		from order o, member m"
+					+ "		where o.member_id = m.id";
 			pstmt = conn.prepareStatement(sql);
 			
 			
@@ -101,6 +101,37 @@ public class OrderDao {
 			conn = getConnection();
 			String sql = "delete from bookmall.order";
 			pstmt = conn.prepareStatement(sql);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("error : " + e);
+		} finally {
+			try {
+				// 자원정리(clean-up)
+				if(pstmt != null) { pstmt.close();}
+				if(conn != null) { conn.close();}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void updateOrder(OrderVo vo){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = getConnection();
+			
+			String sql = "update bookmall.order"
+					   + "	set total_price = ?"
+					   + "	where id = ?"
+					   + "	and order_num = ?";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setInt(1, vo.getTotalPrice());
+			pstmt.setLong(2, vo.getId());
+			pstmt.setInt(3, vo.getOrderNum());
+			
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("error : " + e);
