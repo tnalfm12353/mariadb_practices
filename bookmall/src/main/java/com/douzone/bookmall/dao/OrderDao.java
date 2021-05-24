@@ -33,7 +33,7 @@ public class OrderDao {
 		try {
 			conn = getConnection();
 			
-			String sql = "insert into bookmall.order value(null,?,?,?,?)";
+			String sql = "insert into bookmall.order values(null,?,?,?,?)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, vo.getOrderNum());
 			pstmt.setInt(2, vo.getTotalPrice());
@@ -65,17 +65,19 @@ public class OrderDao {
 			conn = getConnection();
 			
 			String sql = "select o.id, o.order_num, m.name, m.email, o.total_price, o.address "
-					+ "		from order o, member m"
+					+ "		from bookmall.order o, member m"
 					+ "		where o.member_id = m.id";
 			pstmt = conn.prepareStatement(sql);
-			
 			
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				OrderVo vo = new OrderVo();
 				vo.setId(rs.getLong(1));
-				
-				
+				vo.setOrderNum(rs.getInt(2));
+				vo.setMemberName(rs.getString(3));
+				vo.setMemberEmail(rs.getString(4));
+				vo.setTotalPrice(rs.getInt(5));
+				vo.setAddress(rs.getString(6));
 				result.add(vo);
 			}
 		

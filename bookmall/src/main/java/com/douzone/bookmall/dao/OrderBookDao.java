@@ -34,7 +34,7 @@ public class OrderBookDao {
 		try {
 			conn = getConnection();
 			
-			String sql = "insert into orderBook value(?,?,?,?)";
+			String sql = "insert into order_book value(?,?,?,?)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, vo.getPrice());
 			pstmt.setInt(2, vo.getCount());

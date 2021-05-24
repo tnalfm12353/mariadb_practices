@@ -61,5 +61,12 @@ public class OrderVo {
 	public void setMemberId(Long memberId) {
 		this.memberId = memberId;
 	}
+	@Override
+	public String toString() {
+		return "OrderVo [orderNum=" + orderNum + ", memberName=" + memberName + ", memberEmail=" + memberEmail
+				+ ", memberTel=" + memberTel + ", totalPrice=" + totalPrice + ", address=" + address + "]";
+	}
+	
+	
 	
 }
