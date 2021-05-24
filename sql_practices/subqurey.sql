@@ -54,8 +54,31 @@ select t.title , avg(s.salary) as avg_salary
 		where s.emp_no = t.emp_no
 		and s.to_date = '9999-01-01'
 		and t.to_date = '9999-01-01'
-    group by t.title;
-
+    group by t.title; 
+            
+select min(a.avg_salary)
+	from (select t.title, avg(s.salary) as avg_salary
+			from titles t, salaries s
+            where t.emp_no = s.emp_no
+            and t.to_date = '9999-01-01'
+            and s.to_date = '9999-01-01'
+            group by t.title)a;
+-- 강사님꺼
+select t.title, avg(s.salary) as avg_salary
+	from titles t, salaries s
+    where t.emp_no = s.emp_no
+    and t.to_date = '9999-01-01'
+    and s.to_date = '9999-01-01'
+    group by t.title 
+		having round(avg_salary) = (select min(a.avg_salary)
+										from (select round(avg(s.salary)) as avg_salary
+												from titles t, salaries s
+												where t.emp_no = s.emp_no
+												and t.to_date = '9999-01-01'
+												and s.to_date = '9999-01-01'
+												group by t.title)a);
+        
+-- 돌아가는데 쓰면안됨.-> 수학적 함수를 사용하고 title을 가져올려면 group by로 묶어줘야함.
 select result.title ,min(result.avg_salary)
 	from (select 
 			t.title as title , avg(s.salary) as avg_salary
@@ -63,8 +86,24 @@ select result.title ,min(result.avg_salary)
 				where s.emp_no = t.emp_no
 				and s.to_date = '9999-01-01'
 				and t.to_date = '9999-01-01'
-			group by t.title) as result;  
+			group by t.title) as result;
             
+-- test 안됨.. -> avg(b.salary)는 프로세스가 끝나고난 후 생성되는 것인데 바로 where절에서 사용할려니 알 수 없는 것이므로.
+select a.title, avg(b.salary)
+	from titles a, salaries b,
+		(select min(a.avg_salary)as min_avg
+			from ( select avg(b.salary) as avg_salary
+						from titles a, salaries b
+						where a.emp_no = b.emp_no
+						and a.to_date = '9999-01-01'
+						and b.to_date = '9999-01-01'
+						group by a.title) a) c
+   where a.emp_no = b.emp_no
+     and a.to_date = '9999-01-01'
+     and b.to_date = '9999-01-01'
+     and avg(b.salary) = c.min_avg
+     group by a.title;
+
 -- solution 2 : top-k
 select t.title , avg(s.salary) as avg_salary
 	from salaries s, titles t
